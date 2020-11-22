@@ -8,6 +8,8 @@ Created on Sun Nov 22 14:51:07 2020
 #projet sciences numériques
 
 import numpy as np
+import matplotlib.pyplot as plt 
+from matplotlib.colors import LogNorm 
 
 #définitions des différents paramètres
 #(pourra être demandé à l'utilisateur plus tard)
@@ -112,15 +114,22 @@ def differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt): #Temp_i : profil 
 
 #obtention du maillage de température à chaque instant
 #les différents maillages sont conservés dans un fichier txt nommé maillage_temp
+#on affiche pour chaque point Pt le maillage de température par des nuances oranges
+#A VOIR : lorsqu'on prend bcp de points, ça met bcp de temps : essayer d'afficher
+#seulement tous les 5 points le schéma par ex
 
 def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt):
     if stabilite_schema(a,Lx,Ly,Px,Py,Ttot,Pt)==1:
         Temp_i=temperature_initiale(Px,Py,U0,U1,U2)
+        mini=np.min([U0,U1,U2])
+        maxi=np.max([U0,U1,U2])
         with open("temperature.txt", "w") as filout:
             for t in range(Pt):
                 filout.write("{}\n".format(Temp_i))
+                plt.pcolormesh(Temp_i, cmap=plt.cm.Oranges, vmin=mini, vmax=maxi) 
+                plt.show() 
                 Temp_i=differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
-        print("c'est ok")
+    return Temp_i
 
 #test    
 #profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
