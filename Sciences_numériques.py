@@ -27,6 +27,31 @@ U2=314  #température à la limite T2
 
 ############################################################################
 
+#Vérification de la stabilité du schéma numérique
+#A PROUVER : ce schéma est stable ssi a*Dt/Dx**2 < 1/2 et a*Dt/Dy**2 < 1/2
+
+def stabilite_schema(a,Lx,Ly,Px,Py,Ttot,Pt):
+    Dt=Ttot/Pt
+    Dx=Lx/Px
+    Dy=Ly/Py
+    
+    A=a*Dt/Dx**2
+    B=a*Dt/Dy**2
+    
+    if B>=1/2:
+        print("B>1/2, le schéma n'est pas cohérent : diminuer le delta t ou augmenter delta x")
+        return 0
+    elif A>=1/2:
+        print("A>1/2, le schéma n'est pas cohérent : diminuer le delta t ou augmenter delta y")
+        return 0
+    else:
+        return 1
+
+#test
+#print(stabilite_schema(a,Lx,Ly,Px,Py,Ttot,Pt))
+
+############################################################################
+
 #conditions aux limites
 def condition_limite_y(Py,U1,U2):
     Cote=np.ones((1,Py))*U2  #profil sur les côtés x=O et x=Lx
@@ -89,17 +114,15 @@ def differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt): #Temp_i : profil 
 #les différents maillages sont conservés dans un fichier txt nommé maillage_temp
 
 def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt):
-    Temp_i=temperature_initiale(Px,Py,U0,U1,U2)
-    with open("temperature.txt", "w") as filout:
-        for t in range(Pt):
-            filout.write("{}\n".format(Temp_i))
-            Temp_i=differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
-    print("c'est ok")
+    if stabilite_schema(a,Lx,Ly,Px,Py,Ttot,Pt)==1:
+        Temp_i=temperature_initiale(Px,Py,U0,U1,U2)
+        with open("temperature.txt", "w") as filout:
+            for t in range(Pt):
+                filout.write("{}\n".format(Temp_i))
+                Temp_i=differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
+        print("c'est ok")
 
 #test    
 #profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
 
 ############################################################################
-
-#A NE PAS OUBLIER : mettre des conditions sur les CI, parce que si le maillage
-#est trop grossier, c'est plus valable
