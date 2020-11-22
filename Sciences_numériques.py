@@ -18,7 +18,7 @@ Px=5    #nombre de points du maillage selon x
 Py=6    #nombre de points du maillage selon y
 a=98*(10**-6) #diffusivité thermique pour une plaque en silicium
 
-Ttot=10 #temps total de l'expérience en seconde
+Ttot=100 #temps total de l'expérience en seconde
 Pt=100  #maillage temporel 
 
 U0=294  #température initiale en K
@@ -84,3 +84,22 @@ def differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt): #Temp_i : profil 
 #print(differences_finies(temperature_initiale(Px,Py,U0,U1,U2),Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt))
 
 ############################################################################
+
+#obtention du maillage de température à chaque instant
+#les différents maillages sont conservés dans un fichier txt nommé maillage_temp
+
+def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt):
+    Temp_i=temperature_initiale(Px,Py,U0,U1,U2)
+    with open("temperature.txt", "w") as filout:
+        for t in range(Pt):
+            filout.write("{}\n".format(Temp_i))
+            Temp_i=differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
+    print("c'est ok")
+
+#test    
+#profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
+
+############################################################################
+
+#A NE PAS OUBLIER : mettre des conditions sur les CI, parce que si le maillage
+#est trop grossier, c'est plus valable
