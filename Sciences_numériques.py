@@ -7,6 +7,8 @@ Created on Sun Nov 22 14:51:07 2020
 
 #projet sciences numériques
 
+import numpy as np
+
 #définitions des différents paramètres
 #(pourra être demandé à l'utilisateur plus tard)
 
@@ -23,4 +25,26 @@ U0=294  #température initiale en K
 U1=304  #température à la limite T1
 U2=314  #température à la limite T2
 
+############################################################################
 
+#conditions aux limites
+Cote0=np.ones((1,Py))*U2  #profil de température sur le côté tel que x=0
+CoteLx=np.ones((1,Py))*U2 #profil de température sur le côté tel que x=Lx
+
+#Profil de température à t=0
+#on crée un tableau pour les températures intérieures, ie sans prendre en compte
+#les côtés x=0 et x=Lx, calculés ci-dessus, qui seront ensuite rajoutés
+
+Temp_inte_0=np.ones((Px-2,Py))*U0
+for k in range(Px-2):
+    Temp_inte_0[k,0]=U1     #conditions aux limites en y=0
+    Temp_inte_0[k,Py-1]=U2  #conditions aux limites en y=Ly
+    
+#on combine Temp_inte_0 aux conditions aux limites x=0 et x=Lx
+Temp_0=np.vstack((Cote0,Temp_inte_0,CoteLx))
+
+#on fait pour les points (0,0) et (Lx,0) une moyenne entre U2 et U1 pour "modéliser"
+#la continuité de la température aux bords
+Temp_0[0,0]=Temp_0[Px-1,0]=(U1+U2)/2
+
+############################################################################
