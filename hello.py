@@ -28,21 +28,23 @@ def saisie_n():
 def solution_analytique(U1,U2,Lx,Ly,Px,Py):
     n = saisie_n()
     global somme
+    Dx=Lx/Px
+    Dy=Ly/Py
     Temp_i=np.zeros((Px,Py))
     for i in range(0,Px):
         for j in range(0,Py):
             for k in range(0,n):
                 try:
-                    somme += (1/(2*n+1))*sin(((2*n+1)*pi*i)/Lx)*(sinh(((Ly-j)*(2*n*+1)*pi)/Lx))/(sinh(((2*n*+1)*pi*Ly)/Lx))
+                    somme += (1/(2*n+1))*sin(((2*n+1)*pi*Dx*i)/Lx)*(sinh(((Ly-Dy*j)*(2*n*+1)*pi)/Lx))/(sinh(((2*n*+1)*pi*Ly)/Lx))
                 except OverflowError:
                     somme = float('inf')
             Temp_i[i,j]=U2+((4*(U1-U2))/pi)*somme
             print("i=",i," j=",j, "tab= ",Temp_i[i,j])
     return Temp_i
 
+
 #affichage du profil de température
 #ajouter le ss programme de Camille sur la stabilité en fct de comment on organise les modules
-
 def affichage_profil(U1,U2,Lx,Ly,Px,Py):
     #si stabilité
     Temp_i = solution_analytique(U1,U2,Lx,Ly,Px,Py)
