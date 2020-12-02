@@ -30,16 +30,16 @@ def solution_analytique(U1,U2,Lx,Ly,Px,Py):
     global somme
     Dx=Lx/Px
     Dy=Ly/Py
-    Temp_i=np.zeros((Px,Py))
-    for i in range(0,Px):
-        for j in range(0,Py):
+    Temp_i=np.zeros((Py,Px))
+    for j in range(0,Py):
+        for i in range(0,Px):
             for k in range(0,n):
                 try:
                     somme += (1/(2*n+1))*sin(((2*n+1)*pi*Dx*i)/Lx)*(sinh(((Ly-Dy*j)*(2*n*+1)*pi)/Lx))/(sinh(((2*n*+1)*pi*Ly)/Lx))
                 except OverflowError:
                     somme = float('inf')
-            Temp_i[i,j]=U2+((4*(U1-U2))/pi)*somme
-            print("i=",i," j=",j, "tab= ",Temp_i[i,j])
+            Temp_i[j,i]=U2+((4*(U1-U2))/pi)*somme
+            print("x=",j," y=",i, "tab= ",Temp_i[j,i])
     return Temp_i
 
 
