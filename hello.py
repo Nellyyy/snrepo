@@ -27,19 +27,30 @@ def saisie_n():
 #profil de température selon la solution analytique
 def solution_analytique(U1,U2,Lx,Ly,Px,Py):
     n = saisie_n()
+    
     global somme
     Dx=Lx/Px
     Dy=Ly/Py
     Temp_i=np.zeros((Py,Px))
+
+    #conditions limites
     for j in range(0,Py):
-        for i in range(0,Px):
+        Temp_i[j,0]=U1
+        Temp_i[j,Px-1]=U2
+    for i in range(0,Px):
+        Temp_i[0,i]=U2
+        Temp_i[Py-1,i]=U2
+        
+    #remplissage de la matrice avec la solution analytique
+    for j in range(1,Py):
+        for i in range(1,Px):
             for k in range(0,n):
                 try:
                     somme += (1/(2*n+1))*sin(((2*n+1)*pi*Dx*i)/Lx)*(sinh(((Ly-Dy*j)*(2*n*+1)*pi)/Lx))/(sinh(((2*n*+1)*pi*Ly)/Lx))
                 except OverflowError:
                     somme = float('inf')
             Temp_i[j,i]=U2+((4*(U1-U2))/pi)*somme
-            print("x=",j," y=",i, "tab= ",Temp_i[j,i])
+            print(" y=",j,"x=",i, "tab= ",Temp_i[j,i])
     return Temp_i
 
 
