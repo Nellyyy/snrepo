@@ -13,8 +13,8 @@ U2=314  #température à la limite T2
 
 Lx=200  #longueur de la plaque selon x (en cm)
 Ly=100  #longueur de la plaque selon y (en cm)
-Px=5    #nombre de points du maillage selon x
-Py=6    #nombre de points du maillage selon y
+Px=20    #nombre de points du maillage selon x
+Py=21   #nombre de points du maillage selon y
 
 somme=0 #on initialise la somme à 0 pour éviter les erreurs
 
@@ -34,16 +34,16 @@ def solution_analytique(U1,U2,Lx,Ly,Px,Py):
     Temp_i=np.zeros((Py,Px))
 
     #conditions limites
-    for j in range(0,Py):
-        Temp_i[j,0]=U1
-        Temp_i[j,Px-1]=U2
     for i in range(0,Px):
         Temp_i[0,i]=U2
         Temp_i[Py-1,i]=U2
+    for j in range(0,Py):
+        Temp_i[j,0]=U1
+        Temp_i[j,Px-1]=U2
         
     #remplissage de la matrice avec la solution analytique
-    for j in range(1,Py):
-        for i in range(1,Px):
+    for j in range(1,Py-1):
+        for i in range(1,Px-1):
             for k in range(0,n):
                 try:
                     somme += (1/(2*n+1))*sin(((2*n+1)*pi*Dx*i)/Lx)*(sinh(((Ly-Dy*j)*(2*n*+1)*pi)/Lx))/(sinh(((2*n*+1)*pi*Ly)/Lx))
