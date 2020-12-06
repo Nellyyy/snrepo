@@ -10,18 +10,19 @@ Created on Sun Nov 22 14:51:07 2020
 import numpy as np
 import matplotlib.pyplot as plt 
 from matplotlib.colors import LogNorm 
+import sys
 
 #définitions des différents paramètres
 #(pourra être demandé à l'utilisateur plus tard)
 
 Lx=1  #longueur de la plaque selon x (en m)
 Ly=1  #longueur de la plaque selon y (en m)
-Px=80    #nombre de points du maillage selon x
+Px=100    #nombre de points du maillage selon x
 Py=100    #nombre de points du maillage selon y
 a=98*(10**-6) #diffusivité thermique pour une plaque en silicium
 
 Ttot=1000 #temps total de l'expérience en seconde
-Pt=5000  #maillage temporel 
+Pt=4000     #maillage temporel 
 
 U0=294  #température initiale en K
 U1=304  #température à la limite T1
@@ -37,14 +38,14 @@ def stabilite_schema(a,Lx,Ly,Px,Py,Ttot,Pt):
     Dx=Lx/Px
     Dy=Ly/Py
     
-    A=a*Dt/Dx**2
-    B=a*Dt/Dy**2
+    Fx=a*Dt/Dx**2
+    Fy=a*Dt/Dy**2
     
-    if B>=1/2:
-        print("B>1/2, le schéma n'est pas cohérent : diminuer le delta t ou augmenter delta x")
+    if Fy>=1/4:
+        print("Fy>1/2, le schéma n'est pas cohérent : diminuer le delta t ou augmenter delta y")
         return 0
-    elif A>=1/2:
-        print("A>1/2, le schéma n'est pas cohérent : diminuer le delta t ou augmenter delta y")
+    elif Fx>=1/4:
+        print("Fx>1/2, le schéma n'est pas cohérent : diminuer le delta t ou augmenter delta x")
         return 0
     else:
         return 1
@@ -91,8 +92,8 @@ def differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt): #Temp_i : profil 
     Dx=Lx/Px
     Dy=Ly/Py
     
-    A=a*Dt/Dx**2
-    B=a*Dt/Dy**2
+    Fx=a*Dt/Dx**2
+    Fy=a*Dt/Dy**2
     
     Cote_0=condition_limite_x(Px,U1,U2)[0]
     Cote_Lx=condition_limite_x(Px,U1,U2)[1]
@@ -106,7 +107,7 @@ def differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt): #Temp_i : profil 
         Temp_j[k,0]=U2     #conditions aux limites en x=0
         Temp_j[k,Px-1]=U2  #conditions aux limites en x=Lx
         for h in range(1, Px-1):
-            Temp_j[k,h]=(1-2*(A+B))*Temp_i[k,h]+B*(Temp_i[k+1,h]+Temp_i[k-1,h])+A*(Temp_i[k,h+1]+Temp_i[k,h-1]) 
+            Temp_j[k,h]=(1-2*(Fx+Fy))*Temp_i[k,h]+Fy*(Temp_i[k+1,h]+Temp_i[k-1,h])+Fx*(Temp_i[k,h+1]+Temp_i[k,h-1]) 
    
     return Temp_j
 
@@ -119,23 +120,47 @@ def differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt): #Temp_i : profil 
 #les différents maillages sont conservés dans un fichier txt nommé maillage_temp
 #on affiche le maillage de température à la fin de l'expérience par des nuances oranges
 
-def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt):
+def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,epsilon):
     if stabilite_schema(a,Lx,Ly,Px,Py,Ttot,Pt)==1:
         Temp_i=temperature_initiale(Px,Py,U0,U1,U2)
-        mini=np.min([U0,U1,U2])
-        maxi=np.max([U0,U1,U2])
+        temps_regime_permanent=0
+        
         with open("temperature.txt", "w") as filout:
+            filout.write("{}\n".format(Temp_i))
             for t in range(Pt):
+                Temp_j=differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
+                #Temp_i=differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
+                difference=np.max(abs(Temp_i-Temp_j))
+                temps_regime_permanent+=Ttot/Pt
+                
+                Temp_i=Temp_j
                 filout.write("{}\n".format(Temp_i))
-                Temp_i=differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
-            plt.pcolormesh(Temp_i, cmap=plt.cm.Oranges, vmin=mini, vmax=maxi) 
-            plt.show()
-            return Temp_i
+                
+                if difference<=epsilon:
+                    return "le programme a atteint le régime permanent. Le temps caractéristique est t=",temps_regime_permanent," et la température finale est ",Temp_i
+                                   
+        return "le programme n'a pas atteint le régime permanent après t=",temps_regime_permanent,"et la température finale atteinte est", Temp_i         
+        #return Temp_i
     else:
         print("schéma non cohérent")
-    
+        sys.exit()
 
-#test    
-print(profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt))
+        
+#test  
+#print(profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,1/100000))
 
 ############################################################################
+#affichage de la température : à mettre dans le "main" ensuite
+#j'ai rajouté la température à afficher dans les paramètres de la fonction, 
+#comme ça la fonction affichage est générale
+
+def affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,Temp_i):
+    mini=np.min([U0,U1,U2])
+    maxi=np.max([U0,U1,U2])
+    with open("temperature_finale_numerique.txt", "w") as filout:
+        filout.write("{}\n".format(Temp_i))
+        plt.pcolormesh(Temp_i, cmap=plt.cm.Oranges, vmin=mini, vmax=maxi) 
+        plt.show()
+
+#test
+#affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,1/100000)[3])
