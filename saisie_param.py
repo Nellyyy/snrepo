@@ -3,12 +3,12 @@
 
 #saisie de la longueur de la plaque selon x en mètres
 def saisie_Lx():
-	Lx = input("Choisissez la longueur de la plaque selon x : ")
+	Lx = input("Choisissez la longueur de la plaque selon x (en m): ")
 	return Lx
 
 #saisie de la largeur de la plaque selon y en mètres
 def saisie_Ly():
-	Lx = input("Choisissez la largeur de la plaque selon y : ")
+	Ly = input("Choisissez la largeur de la plaque selon y (en m): ")
 	return Ly
 
 #saisie du nombre de points du maillage selon x
@@ -23,12 +23,18 @@ def saisie_Py():
 
 #saisie de la diffusivité thermique selon le matériau
 def saisie_a():
+	print("Choisissez la diffusivité du matériau choisi. ")
+	print("Exemples : ")
+	print("   - silicium : a = 98*(10**-6) ")
+	print("   - fer : a = 22,8*(10**-6) ")
+	print("   - cuivre : a = 117*(10**-6) ")
+	print("   - acier : a = 13*(10**-6) ")
 	a = input("Diffusivité du matériau choisi : ")
 	return a
 
 #saisie du temps total de l'expérience en seconde
 def saisie_Ttot():
-	Ttot = input("Temps total de l'expérience : ")
+	Ttot = input("Temps total de l'expérience (en sec): ")
 	return Ttot
 
 #saisie du maillage temporel 
@@ -50,5 +56,6 @@ def saisie_U2():
 	U2 = input("température à la limite T2 (les trois autres faces): ")
 	return U2
 
-#appel des ss-programmes en fonction des besoins
-print(saisie_U2())
+
+
+

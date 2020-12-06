@@ -5,16 +5,16 @@ import numpy as np
 import matplotlib.pyplot as plt 
 from matplotlib.colors import LogNorm 
 
-#définitions des différents paramètres
+#paramètres en dur pour les tests
 
-U0=294  #température initiale en K
-U1=304  #température à la limite T1
-U2=314  #température à la limite T2
+#U0=294  #température initiale en K
+#U1=304  #température à la limite T1
+#U2=314  #température à la limite T2
 
-Lx=200  #longueur de la plaque selon x (en cm)
-Ly=100  #longueur de la plaque selon y (en cm)
-Px=30   #nombre de points du maillage selon x
-Py=30   #nombre de points du maillage selon y
+#Lx=200  #longueur de la plaque selon x (en cm)
+#Ly=100  #longueur de la plaque selon y (en cm)
+#Px=30   #nombre de points du maillage selon x
+#Py=30   #nombre de points du maillage selon y
 
 
 #saisie de la limite de la somme, n tend vers l'infini initalement
@@ -48,17 +48,17 @@ def solution_analytique(U1,U2,Lx,Ly,Px,Py):
 
 #affichage du profil de température
 
-def affichage_profil(U1,U2,Lx,Ly,Px,Py):
-    #si stabilité
-    Temp_i = solution_analytique(U1,U2,Lx,Ly,Px,Py)
-    mini=np.min([U0,U1,U2])
-    maxi=np.max([U0,U1,U2])
-    with open("solana.txt", "w") as filout:
-        filout.write("{}\n".format(Temp_i))
-        plt.pcolormesh(Temp_i, cmap=plt.cm.Oranges, vmin=mini, vmax=maxi) 
-        plt.show() 
-    return Temp_i
-
-affichage_profil(U1,U2,Lx,Ly,Px,Py)
+#def affichage_profil_solana(U0,U1,U2,Lx,Ly,Px,Py):
+#    Temp_i = solution_analytique(U1,U2,Lx,Ly,Px,Py)
+#    mini=np.min([U0,U1,U2])
+#    maxi=np.max([U0,U1,U2])
+#    with open("solana.txt", "w") as filout:
+#        filout.write("{}\n".format(Temp_i))
+#        plt.pcolormesh(Temp_i, cmap=plt.cm.Oranges, vmin=mini, vmax=maxi) 
+#        plt.show() 
+#    return Temp_i
+    
+#test
+#affichage_profil(U1,U2,Lx,Ly,Px,Py)
 
 

@@ -15,18 +15,18 @@ import sys
 #définitions des différents paramètres
 #(pourra être demandé à l'utilisateur plus tard)
 
-Lx=1  #longueur de la plaque selon x (en m)
-Ly=1  #longueur de la plaque selon y (en m)
-Px=100    #nombre de points du maillage selon x
-Py=100    #nombre de points du maillage selon y
-a=98*(10**-6) #diffusivité thermique pour une plaque en silicium
+#Lx=1  #longueur de la plaque selon x (en m)
+#Ly=1  #longueur de la plaque selon y (en m)
+#Px=100    #nombre de points du maillage selon x
+#Py=100    #nombre de points du maillage selon y
+#a=98*(10**-6) #diffusivité thermique pour une plaque en silicium
 
-Ttot=100 #temps total de l'expérience en seconde
-Pt=400     #maillage temporel 
+#Ttot=100 #temps total de l'expérience en seconde
+#Pt=400     #maillage temporel 
 
-U0=294  #température initiale en K
-U1=304  #température à la limite T1
-U2=314  #température à la limite T2
+#U0=294  #température initiale en K
+#U1=304  #température à la limite T1
+# U2=314  #température à la limite T2
 
 ############################################################################
 
@@ -128,10 +128,10 @@ def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,epsilon):
     if stabilite_schema(a,Lx,Ly,Px,Py,Ttot,Pt)==1:
         Temp_i=temperature_initiale(Px,Py,U0,U1,U2)
         temps_regime_permanent=0
-        
+        print("uno")
         with open("temperature.txt", "w") as filout:
             filout.write("{}\n".format(Temp_i))
-            
+            print("dos")
             for t in range(Pt):
                 Temp_j=differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
                 difference=np.max(abs(Temp_i-Temp_j))
@@ -142,28 +142,28 @@ def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,epsilon):
                 
                 if difference<=epsilon:
                     return "le programme a atteint le régime permanent. Le temps caractéristique est t=",temps_regime_permanent," et la température finale est ",Temp_i
-                                   
+                print("tres")                   
         return "le programme n'a pas atteint le régime permanent après t=",temps_regime_permanent,"et la température finale atteinte est", Temp_i         
-
+        print("quatro")
     else:
         print("schéma non cohérent")
         sys.exit()
         
 #test  
-print(profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,1/100))
+#print(profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,1/100))
 
 ############################################################################
 #affichage de la température : à mettre dans le "main" ensuite
 #j'ai rajouté la température à afficher dans les paramètres de la fonction, 
 #comme ça la fonction affichage est générale
 
-def affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,Temp_i):
-    mini=np.min([U0,U1,U2])
-    maxi=np.max([U0,U1,U2])
-    with open("temperature_finale_numerique.txt", "w") as filout:
-        filout.write("{}\n".format(Temp_i))
-        plt.pcolormesh(Temp_i, cmap=plt.cm.Oranges, vmin=mini, vmax=maxi) 
-        plt.show()
+#def affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,Temp_i):
+#    mini=np.min([U0,U1,U2])
+#    maxi=np.max([U0,U1,U2])
+#    with open("temperature_finale_numerique.txt", "w") as filout:
+#        filout.write("{}\n".format(Temp_i))
+#        plt.pcolormesh(Temp_i, cmap=plt.cm.Oranges, vmin=mini, vmax=maxi) 
+#        plt.show()
 
 #test
 #affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,1/100000)[3])
