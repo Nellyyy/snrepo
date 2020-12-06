@@ -26,7 +26,7 @@ import sys
 
 #U0=294  #température initiale en K
 #U1=304  #température à la limite T1
-# U2=314  #température à la limite T2
+#U2=314  #température à la limite T2
 
 ############################################################################
 
@@ -41,11 +41,8 @@ def stabilite_schema(a,Lx,Ly,Px,Py,Ttot,Pt):
     Fx=a*Dt/Dx**2
     Fy=a*Dt/Dy**2
 
-    if Fy>=1/4:
-        print("Fy>1/2, le schéma n'est pas cohérent : diminuer le delta t ou augmenter delta y")
-        return 0
-    elif Fx>=1/4:
-        print("Fx>1/2, le schéma n'est pas cohérent : diminuer le delta t ou augmenter delta x")
+    if (Fy+Fx)>=1/2:
+        print("(Fy+Fx)>1/2, le schéma n'est pas cohérent : diminuer le delta t ou augmenter delta y ou delta x")
         return 0
     else:
         return 1
@@ -106,9 +103,10 @@ def differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt): #Temp_i : profil 
     for k in range(1, Py-1):
         Temp_j[k,0]=U2     #conditions aux limites en x=0
         Temp_j[k,Px-1]=U2  #conditions aux limites en x=Lx
+
         for h in range(1, Px-1):
             Temp_j[k,h]=(1-2*(Fx+Fy))*Temp_i[k,h]+Fy*(Temp_i[k+1,h]+Temp_i[k-1,h])+Fx*(Temp_i[k,h+1]+Temp_i[k,h-1]) 
-   
+
     return Temp_j
 
 #test
@@ -128,12 +126,13 @@ def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,epsilon):
     if stabilite_schema(a,Lx,Ly,Px,Py,Ttot,Pt)==1:
         Temp_i=temperature_initiale(Px,Py,U0,U1,U2)
         temps_regime_permanent=0
-        print("uno")
+        
         with open("temperature.txt", "w") as filout:
             filout.write("{}\n".format(Temp_i))
-            print("dos")
+            
             for t in range(Pt):
                 Temp_j=differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
+                
                 difference=np.max(abs(Temp_i-Temp_j))
                 temps_regime_permanent+=Ttot/Pt
                 
@@ -142,9 +141,9 @@ def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,epsilon):
                 
                 if difference<=epsilon:
                     return "le programme a atteint le régime permanent. Le temps caractéristique est t=",temps_regime_permanent," et la température finale est ",Temp_i
-                print("tres")                   
+                                 
         return "le programme n'a pas atteint le régime permanent après t=",temps_regime_permanent,"et la température finale atteinte est", Temp_i         
-        print("quatro")
+       
     else:
         print("schéma non cohérent")
         sys.exit()
