@@ -129,7 +129,8 @@ def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,epsilon):
         
         with open("temperature.txt", "w") as filout:
             filout.write("{}\n".format(Temp_i))
-            
+
+            print("calcul en cours...")
             for t in range(Pt):
                 Temp_j=differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
                 
@@ -138,6 +139,7 @@ def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,epsilon):
                 
                 Temp_i=Temp_j
                 filout.write("{}\n".format(Temp_i))
+                
                 
                 if difference<=epsilon:
                     return "le programme a atteint le régime permanent. Le temps caractéristique est t=",temps_regime_permanent," et la température finale est ",Temp_i

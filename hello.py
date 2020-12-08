@@ -42,7 +42,9 @@ def solution_analytique(U1,U2,Lx,Ly,Px,Py):
                 except OverflowError:
                     somme = float('inf')
             Temp_i[j,i]=U2+((4*(U1-U2))/pi)*somme
-            print(" y=",j,"x=",i, "tab= ",Temp_i[j,i])
+            
+            #affichage de la température point par point
+            print(" y=",j,"x=",i, "temp = ",Temp_i[j,i])
             
     #on fait pour les points (0,0) et (Lx,0) une moyenne entre les points adjacents pour assurer
     #la continuité de la température aux bords
