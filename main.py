@@ -25,6 +25,10 @@ def affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,Temp_i,solution):
             plt.title("Profil de température avec solution numérique pour Px="+str(Px)+", Py="+str(Py))
         elif solution=="analytique":
             plt.title("Profil de température avec solution analytique pour Px="+str(Px)+", Py="+str(Py)+", N=1000")   
+
+        #légende pour le dégradé de couleur
+        plt.colorbar()
+
         plt.show()
 
 
@@ -43,6 +47,8 @@ def difference_solution(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt):
     
     plt.pcolormesh(Temp_diff, cmap=plt.cm.OrRd, vmin=mini, vmax=maxi)
     plt.title("Différence entre les profils de température obtenus de manière analytique et numérique")
+    #légende pour le dégradé de couleur
+    plt.colorbar()
     plt.show()
     
     return Temp_diff
@@ -66,8 +72,8 @@ def main():
     #saisie en dur pour tests
     Lx = 1
     Ly = 1
-    Px = 30
-    Py = 30
+    Px = 15
+    Py = 15
     U0 = 294
     U1 = 304
     U2 = 314
@@ -76,10 +82,10 @@ def main():
     Pt = 3000
     
     #affichage de la solution analytique
-    affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,solana.solution_analytique(U1,U2,Lx,Ly,Px,Py),"analytique")
+    #affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,solana.solution_analytique(U1,U2,Lx,Ly,Px,Py),"analytique")
     
     #affichage de la solution des diffÃ©rences finies
-    affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,(sn.profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,1/100000))[3],"numerique")
+    #affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,(sn.profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,1/100000))[3],"numerique")
     
     #affichage de la difference de temperature
     difference_solution(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
