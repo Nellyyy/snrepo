@@ -31,7 +31,7 @@ import sys
 ############################################################################
 
 #Vérification de la stabilité du schéma numérique
-#A PROUVER : ce schéma est stable ssi a*Dt/Dx**2 < 1/4 et a*Dt/Dy**2 < 1/4
+#A PROUVER : ce schéma est stable ssi a*Dt/Dx**2 + a*Dt/Dy**2 <= 1/2
 
 def stabilite_schema(a,Lx,Ly,Px,Py,Ttot,Pt):
     Dt=Ttot/Pt
@@ -141,8 +141,8 @@ def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,epsilon):
                 filout.write("{}\n".format(Temp_i))
                 
                 
-                if difference<=epsilon:
-                    return "le programme a atteint le régime permanent. Le temps caractéristique est t=",temps_regime_permanent," et la température finale est ",Temp_i
+                #if difference<=epsilon:
+                #    return "le programme a atteint le régime permanent. Le temps caractéristique est t=",temps_regime_permanent," et la température finale est ",Temp_i
                                  
         return "le programme n'a pas atteint le régime permanent après t=",temps_regime_permanent,"et la température finale atteinte est", Temp_i         
        

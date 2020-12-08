@@ -28,8 +28,8 @@ def saisie_n():
 def solution_analytique(U1,U2,Lx,Ly,Px,Py):
     n = saisie_n()
     
-    Dx=Lx/(Px)
-    Dy=Ly/(Py)
+    Dx=Lx/(Px-1)   #On met Px-1 car pour Px point, il y a Px-1 intervalle
+    Dy=Ly/(Py-1)   #idem
     Temp_i=np.zeros((Py,Px))
         
     #remplissage de la matrice avec la solution analytique

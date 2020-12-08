@@ -74,21 +74,21 @@ def main():
     Ly = 1
     Px = 15
     Py = 15
-    U0 = 294
+    U0 = 200
     U1 = 304
-    U2 = 314
+    U2 = 400
     a = 0.000098
-    Ttot = 1000
-    Pt = 3000
+    Ttot = 2000
+    Pt = 5000
     
     #affichage de la solution analytique
-    #affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,solana.solution_analytique(U1,U2,Lx,Ly,Px,Py),"analytique")
+    affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,solana.solution_analytique(U1,U2,Lx,Ly,Px,Py),"analytique")
     
     #affichage de la solution des diffÃ©rences finies
     affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,(sn.profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,1/100000))[3],"numerique")
     
     #affichage de la difference de temperature
-    #difference_solution(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
+    difference_solution(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
     
     
     
