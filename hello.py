@@ -43,6 +43,11 @@ def solution_analytique(U1,U2,Lx,Ly,Px,Py):
                     somme = float('inf')
             Temp_i[j,i]=U2+((4*(U1-U2))/pi)*somme
             print(" y=",j,"x=",i, "tab= ",Temp_i[j,i])
+            
+    #on fait pour les points (0,0) et (Lx,0) une moyenne entre les points adjacents pour assurer
+    #la continuité de la température aux bords
+    Temp_i[0,0]=(Temp_i[0,1]+Temp_i[1,0])/2
+    Temp_i[0,Px-1]=(Temp_i[0,Px-2]+Temp_i[1,Px-1])/2
     return Temp_i
 
 
