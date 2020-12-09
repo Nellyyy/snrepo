@@ -52,7 +52,41 @@ def difference_solution(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt):
     plt.show()
     
     return Temp_diff
+
+############################################################################ 
+#affichage de l'erreur en fonction du maillage 
+def calcul_erreur(Lx,Ly,a,U0,U1,U2,Ttot):
+    maillage_spatial=[500] #point pour faire une régression linéaire
     
+    #on détermine un maillage de temps respectant la stabilité
+    maillage_temporel=[]
+    Fx=[]
+    Fy=[]
+    for i in range(len(maillage_spatial)):
+        Dx=Lx/maillage_spatial[i]
+        Dy=Lx/maillage_spatial[i]
+
+        nbr_stab=a/Dx**2+a/Dy**2
+
+        nbr_Fourier=0.45
+        Pt=int(Ttot/(nbr_Fourier/nbr_stab))
+        
+        maillage_temporel.append(Pt)
+        
+    #on calcule l'erreur pour différent maillage spatial 
+    erreur=[]
+    for i in range(len(maillage_spatial)):
+        Px=Py=maillage_spatial[i]
+        Pt=maillage_temporel[i]
+        
+        Temp_analytique=solana.solution_analytique(U1,U2,Lx,Ly,Px,Py)
+        Temp_numerique=(sn.profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,1/100000))[3]
+    
+        Temp_diff=Temp_analytique-Temp_numerique
+        
+        erreur.append(np.max(Temp_diff))
+    
+    return Temp_diff, np.max(Temp_diff), erreur
 
 ############################################################################   
     
@@ -68,6 +102,7 @@ def main():
     #a = float(sp.saisie_a())
     #Ttot = int(sp.saisie_Ttot())
     #Pt = int(sp.saisie_Pt())
+    #n = int(sp.saisie_n())
     
     #saisie en dur pour tests
     Lx = 1
@@ -78,18 +113,19 @@ def main():
     U1 = 304
     U2 = 400
     a = 0.000098
-    Ttot = 2000
-    Pt = 5000
+    Ttot = 1000
+    Pt = 10000
     
     #affichage de la solution analytique
-    affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,solana.solution_analytique(U1,U2,Lx,Ly,Px,Py),"analytique")
+    #affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,solana.solution_analytique(U1,U2,Lx,Ly,Px,Py),"analytique")
     
-    #affichage de la solution des diffÃ©rences finies
-    affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,(sn.profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,1/100000))[3],"numerique")
+    #affichage de la solution des différences finies
+    #affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,(sn.profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,1/100000))[3],"numerique")
     
     #affichage de la difference de temperature
-    difference_solution(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
+    #difference_solution(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
     
+    print(calcul_erreur(Lx,Ly,a,U0,U1,U2,Ttot))
     
     
 main()

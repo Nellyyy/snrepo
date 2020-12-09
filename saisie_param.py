@@ -56,6 +56,10 @@ def saisie_U2():
 	U2 = input("température à la limite T2 (les trois autres faces): ")
 	return U2
 
+#Solution analytique : saisie de la valeur de N, nombre de terme de la somme (série infinie approchée)
+def saisie_n():
+	n = input("solution analytique, nombre de termes de la série calculés (prendre 20 par défaut): ")
+	return n
 
 
 

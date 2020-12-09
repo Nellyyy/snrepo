@@ -116,13 +116,13 @@ def differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt): #Temp_i : profil 
 
 #obtention du maillage de température à chaque instant
 #les différents maillages sont conservés dans un fichier txt nommé maillage_temp
-#on affiche le maillage de température à la fin de l'expérience par des nuances oranges
 
-#on demande en entrée une grande epsilon : max(T(t+1)[k,h]-T(t)[k,h]) es inférieure à epsilon
+#on demande en entrée une grande epsilon : si max(T(t+1)[k,h]-T(t)[k,h]) est inférieure à epsilon
 #on considère avoir atteint le régime permanent, et on arrête la fonction
 
 
 def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,epsilon):
+    #on vérifie que les paramètres entrés sont conformes à la condition de stabilité
     if stabilite_schema(a,Lx,Ly,Px,Py,Ttot,Pt)==1:
         Temp_i=temperature_initiale(Px,Py,U0,U1,U2)
         temps_regime_permanent=0
@@ -131,18 +131,20 @@ def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,epsilon):
             filout.write("{}\n".format(Temp_i))
 
             print("calcul en cours...")
+            
+            #on calcule pour chaque temps t le maillage, en utilisant la méthode des différences finies
             for t in range(Pt):
                 Temp_j=differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
                 
+                #calcul de T(t+1)[k,h]-T(t)[k,h] : si c'est inférieur à epsilon, on arrête le programme
                 difference=np.max(abs(Temp_i-Temp_j))
                 temps_regime_permanent+=Ttot/Pt
                 
                 Temp_i=Temp_j
                 filout.write("{}\n".format(Temp_i))
                 
-                
-                #if difference<=epsilon:
-                #    return "le programme a atteint le régime permanent. Le temps caractéristique est t=",temps_regime_permanent," et la température finale est ",Temp_i
+                if difference<=epsilon:
+                    return "le programme a atteint le régime permanent. Le temps caractéristique est t=",temps_regime_permanent," et la température finale est ",Temp_i
                                  
         return "le programme n'a pas atteint le régime permanent après t=",temps_regime_permanent,"et la température finale atteinte est", Temp_i         
        
