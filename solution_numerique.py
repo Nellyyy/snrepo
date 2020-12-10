@@ -124,6 +124,7 @@ def differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt): #Temp_i : profil 
 def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,epsilon):
     #on vérifie que les paramètres entrés sont conformes à la condition de stabilité
     if stabilite_schema(a,Lx,Ly,Px,Py,Ttot,Pt)==1:
+        print("n1")
         Temp_i=temperature_initiale(Px,Py,U0,U1,U2)
         temps_regime_permanent=0
         
@@ -134,6 +135,7 @@ def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,epsilon):
             
             #on calcule pour chaque temps t le maillage, en utilisant la méthode des différences finies
             for t in range(Pt):
+                print("n2")
                 Temp_j=differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
                 
                 #calcul de T(t+1)[k,h]-T(t)[k,h] : si c'est inférieur à epsilon, on arrête le programme
@@ -145,7 +147,7 @@ def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,epsilon):
                 
                 if difference<=epsilon:
                     return "le programme a atteint le régime permanent. Le temps caractéristique est t=",temps_regime_permanent," et la température finale est ",Temp_i
-                                 
+        print("n3")                        
         return "le programme n'a pas atteint le régime permanent après t=",temps_regime_permanent,"et la température finale atteinte est", Temp_i         
        
     else:

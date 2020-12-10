@@ -17,17 +17,11 @@ from matplotlib.colors import LogNorm
 #Py=30   #nombre de points du maillage selon y
 
 
-#saisie de la limite de la somme, n tend vers l'infini initalement
-def saisie_n():
-    n = input("saisir le paramètre n (grand) : ")
-    print("valeur choisie: ", n)
-    return int(n)
 
 #profil de température selon la solution analytique
 
-def solution_analytique(U1,U2,Lx,Ly,Px,Py):
-    n = saisie_n()
-    
+def solution_analytique(U1,U2,Lx,Ly,Px,Py,n):
+    print("a1")
     Dx=Lx/(Px-1)   #On met Px-1 car pour Px point, il y a Px-1 intervalle
     Dy=Ly/(Py-1)   #idem
     Temp_i=np.zeros((Py,Px))
@@ -37,6 +31,7 @@ def solution_analytique(U1,U2,Lx,Ly,Px,Py):
     for j in range(0,Py):
         for i in range(0,Px):
             somme = 0
+            print("a2")
             for k in range(0,n):
                 try:
                     somme += (1/(2*k+1))*sin(((2*k+1)*pi*Dx*i)/Lx)*((exp(-Dy*j*(2*k+1)*pi/Lx)-exp((-2*Ly+Dy*j)*(2*k+1)*pi/Lx))/(1-exp(-2*Ly*(2*k+1)*pi/Lx)))
@@ -46,7 +41,7 @@ def solution_analytique(U1,U2,Lx,Ly,Px,Py):
             
             #affichage de la température point par point
             #print(" y=",j,"x=",i, "temp = ",Temp_i[j,i])
-            
+    print("a3")        
     #on fait pour les points (0,0) et (Lx,0) une moyenne entre les points adjacents pour assurer
     #la continuité de la température aux bords
     Temp_i[0,0]=(Temp_i[0,1]+Temp_i[1,0])/2

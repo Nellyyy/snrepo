@@ -1,6 +1,7 @@
 import solution_numerique as sn
 import saisie_param as sp
 import hello as solana
+import affiche_erreur as ae
 
 import numpy as np
 import matplotlib.pyplot as plt 
@@ -36,8 +37,8 @@ def affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,Temp_i,solution):
 #calcul de la différence entre la température obtenue par solution analytique et 
 #celle obtenue par solution numérique
 
-def difference_solution(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt):
-    Temp_analytique=solana.solution_analytique(U1,U2,Lx,Ly,Px,Py)
+def difference_solution(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,n):
+    Temp_analytique=solana.solution_analytique(U1,U2,Lx,Ly,Px,Py,n)
     Temp_numerique=(sn.profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,1/1000000))[3]
     
     Temp_diff=Temp_analytique-Temp_numerique
@@ -53,40 +54,6 @@ def difference_solution(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt):
     
     return Temp_diff
 
-############################################################################ 
-#affichage de l'erreur en fonction du maillage 
-def calcul_erreur(Lx,Ly,a,U0,U1,U2,Ttot):
-    maillage_spatial=[500] #point pour faire une régression linéaire
-    
-    #on détermine un maillage de temps respectant la stabilité
-    maillage_temporel=[]
-    Fx=[]
-    Fy=[]
-    for i in range(len(maillage_spatial)):
-        Dx=Lx/maillage_spatial[i]
-        Dy=Lx/maillage_spatial[i]
-
-        nbr_stab=a/Dx**2+a/Dy**2
-
-        nbr_Fourier=0.45
-        Pt=int(Ttot/(nbr_Fourier/nbr_stab))
-        
-        maillage_temporel.append(Pt)
-        
-    #on calcule l'erreur pour différent maillage spatial 
-    erreur=[]
-    for i in range(len(maillage_spatial)):
-        Px=Py=maillage_spatial[i]
-        Pt=maillage_temporel[i]
-        
-        Temp_analytique=solana.solution_analytique(U1,U2,Lx,Ly,Px,Py)
-        Temp_numerique=(sn.profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,1/100000))[3]
-    
-        Temp_diff=Temp_analytique-Temp_numerique
-        
-        erreur.append(np.max(Temp_diff))
-    
-    return Temp_diff, np.max(Temp_diff), erreur
 
 ############################################################################   
     
@@ -115,17 +82,19 @@ def main():
     a = 0.000098
     Ttot = 1000
     Pt = 10000
+    n=1000
     
     #affichage de la solution analytique
-    #affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,solana.solution_analytique(U1,U2,Lx,Ly,Px,Py),"analytique")
+    #affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,solana.solution_analytique(U1,U2,Lx,Ly,Px,Py,n),"analytique")
     
     #affichage de la solution des différences finies
     #affichage_profil(U1,U2,U0,Lx,Ly,Px,Py,(sn.profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,1/100000))[3],"numerique")
     
     #affichage de la difference de temperature
-    #difference_solution(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
+    #difference_solution(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,n)
     
-    print(calcul_erreur(Lx,Ly,a,U0,U1,U2,Ttot))
+    #print(ae.calcul_erreur(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,n))
+    print(ae.affichage_erreur(Lx,Ly,a,U0,U1,U2,Ttot,n))
     
     
 main()
