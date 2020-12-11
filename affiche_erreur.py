@@ -1,6 +1,6 @@
 import solution_numerique as sn
 import saisie_param as sp
-import hello as solana
+import solution_analytique as solana
 
 import numpy as np
 import matplotlib.pyplot as plt 

@@ -1,7 +1,7 @@
 #import des différentes librairies
 import solution_numerique as sn
 import saisie_param as sp
-import hello as solana
+import solution_analytique as solana
 import affiche_erreur as ae
 
 import numpy as np
