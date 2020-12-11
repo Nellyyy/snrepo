@@ -58,7 +58,7 @@ def saisie_U2():
 
 #Solution analytique : saisie de la valeur de N, nombre de terme de la somme (série infinie approchée)
 def saisie_n():
-	n = input("solution analytique, nombre de termes de la série calculés (prendre 20 par défaut): ")
+	n = input("solution analytique, nombre de termes de la série calculés (prendre 1000 par défaut): ")
 	return n
 
 
