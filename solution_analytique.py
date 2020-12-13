@@ -3,10 +3,13 @@ from math import *
 import numpy as np
 
 import matplotlib.pyplot as plt 
-from matplotlib.colors import LogNorm 
+from matplotlib.colors import LogNorm
+import math 
+from numba import jit
 
 ############################################################################
 #profil de température selon la solution analytique
+@jit(nopython=True)
 def solution_analytique(U1,U2,Lx,Ly,Px,Py,n):
     Dx=Lx/(Px-1)   #On met Px-1 car pour Px point, il y a Px-1 intervalle
     Dy=Ly/(Py-1)   #idem
@@ -23,10 +26,7 @@ def solution_analytique(U1,U2,Lx,Ly,Px,Py,n):
             #calcul de la somme
             #ne pouvant simuler l'infini, on arrête la somme à n (supposé grand)
             for k in range(0,n):
-                try:
-                    somme += (1/(2*k+1))*sin(((2*k+1)*pi*Dx*i)/Lx)*((exp(-Dy*j*(2*k+1)*pi/Lx)-exp((-2*Ly+Dy*j)*(2*k+1)*pi/Lx))/(1-exp(-2*Ly*(2*k+1)*pi/Lx)))
-                except OverflowError:
-                    somme = float('inf')
+                somme += (1/(2*k+1))*sin(((2*k+1)*pi*Dx*i)/Lx)*((exp(-Dy*j*(2*k+1)*pi/Lx)-exp((-2*Ly+Dy*j)*(2*k+1)*pi/Lx))/(1-exp(-2*Ly*(2*k+1)*pi/Lx)))
             #calcul de la température au noeud (j,i)
             Temp_i[j,i]=U2+((4*(U1-U2))/pi)*somme     
     #Pour les points (0,0) et (Lx,0), on fait une moyenne entre les points adjacents pour assurer

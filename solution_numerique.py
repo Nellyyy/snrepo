@@ -11,13 +11,14 @@ import numpy as np
 import matplotlib.pyplot as plt 
 from matplotlib.colors import LogNorm 
 import sys
-
+import math
+from numba import jit
+from tqdm import tqdm
 
 ############################################################################
 
 #Vérification de la stabilité du schéma numérique
-#A PROUVER : ce schéma est stable ssi a*Dt/Dx**2 + a*Dt/Dy**2 <= 1/2
-
+@jit(nopython=True)
 def stabilite_schema(a,Lx,Ly,Px,Py,Ttot,Pt):
     Dt=Ttot/Pt
     Dx=Lx/Px
@@ -36,6 +37,7 @@ def stabilite_schema(a,Lx,Ly,Px,Py,Ttot,Pt):
 ############################################################################
 
 #conditions aux limites
+@jit(nopython=True)
 def condition_limite_x(Px,U1,U2):
     Cote_0=np.ones((1,Px))*U1  #profil sur les côtés y=O
     Cote_Ly=np.ones((1,Px))*U2  #profil sur les côtés y=Ly
@@ -44,7 +46,7 @@ def condition_limite_x(Px,U1,U2):
 #Profil de température à t=0
 #on créé un tableau pour les températures intérieures, ie sans prendre en compte
 #les côtés x=0 et x=Lx, calculés ci-dessus, qui seront ensuite rajoutés
-
+@jit(nopython=True)
 def temperature_initiale(Px,Py,U0,U1,U2):
     Temp_inte_0=np.ones((Py-2,Px))*U0
     for k in range(Py-2):
@@ -64,7 +66,7 @@ def temperature_initiale(Px,Py,U0,U1,U2):
 
 #schémas aux différences finies
 #déterminer le profil de température à l'instant i+1 en fonction de celui au temps i
-
+@jit(nopython=True)
 def differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt): #Temp_i : profil de température au temps i
     Dt=Ttot/Pt
     Dx=Lx/Px
@@ -112,7 +114,7 @@ def profil_temperature(Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt,epsilon):
             print("Solution numérique : calcul en cours...")
             
             #on calcule pour chaque temps t le maillage, en utilisant la méthode des différences finies
-            for t in range(Pt):
+            for t in tqdm(range(Pt)):
                 Temp_j=differences_finies(Temp_i,Lx,Ly,Px,Py,a,U0,U1,U2,Ttot,Pt)
                 
                 #calcul de T(t+1)[k,h]-T(t)[k,h] : si c'est inférieur à epsilon, on arrête le programme
